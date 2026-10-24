@@ -1,0 +1,9 @@
+{
+  "tasks": [
+    {"id":"A", "type":"sleep", "args":{"ms":0}, "depends_on":[]},
+    {"id":"B", "type":"sum_squares", "args":{"from":1,"to":10}, "depends_on":[]},
+    {"id":"C", "type":"sleep", "args":{"ms":0}, "depends_on":["A"]},
+    {"id":"D", "type":"sleep", "args":{"ms":0}, "depends_on":["A","B"]},
+    {"id":"E", "type":"sleep", "args":{"ms":0}, "depends_on":["C","D"]}
+  ]
+}

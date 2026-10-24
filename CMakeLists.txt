@@ -1,0 +1,40 @@
+cmake_minimum_required(VERSION 3.20)
+project(distributed_task_scheduler LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+find_package(Threads REQUIRED)
+
+add_library(scheduler src/task_graph.cpp src/net.cpp src/protocol.cpp src/thread_pool.cpp)
+target_include_directories(scheduler PUBLIC src)
+target_include_directories(scheduler SYSTEM PUBLIC third_party)
+target_link_libraries(scheduler PUBLIC Threads::Threads ws2_32)
+if(MSVC)
+    target_compile_options(scheduler PRIVATE /W4)
+else()
+    target_compile_options(scheduler PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+add_executable(coordinator src/coordinator.cpp)
+target_link_libraries(coordinator PRIVATE scheduler)
+add_executable(worker src/worker.cpp)
+target_link_libraries(worker PRIVATE scheduler)
+
+include(CTest)
+if(BUILD_TESTING)
+    add_executable(scheduler_tests tests/tests.cpp)
+    target_link_libraries(scheduler_tests PRIVATE scheduler)
+    add_test(NAME unit COMMAND scheduler_tests)
+    set_tests_properties(unit PROPERTIES TIMEOUT 20)
+
+    find_package(Python3 COMPONENTS Interpreter)
+    if(Python3_Interpreter_FOUND)
+        add_test(NAME integration COMMAND "${Python3_EXECUTABLE}"
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration.py"
+            --coordinator $<TARGET_FILE:coordinator> --worker $<TARGET_FILE:worker>)
+        set_tests_properties(integration PROPERTIES TIMEOUT 90)
+    else()
+        message(WARNING "Python3 was not found; run integration tests manually")
+    endif()
+endif()

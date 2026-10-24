@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {"id":"A", "type":"sleep", "args":{"ms":300}, "depends_on":[]},
+    {"id":"B", "type":"sleep", "args":{"ms":300}, "depends_on":[]},
+    {"id":"C", "type":"sum_squares", "args":{"from":1,"to":10}, "depends_on":[]},
+    {"id":"D", "type":"sum_squares", "args":{"from":-3,"to":3}, "depends_on":[]},
+    {"id":"E", "type":"sleep", "args":{"ms":100}, "depends_on":["A"]},
+    {"id":"F", "type":"sum_squares", "args":{"from":1,"to":100}, "depends_on":["A"]},
+    {"id":"G", "type":"sleep", "args":{"ms":100}, "depends_on":["B"]},
+    {"id":"H", "type":"sum_squares", "args":{"from":10,"to":20}, "depends_on":["C","D"]},
+    {"id":"I", "type":"sleep", "args":{"ms":100}, "depends_on":["E","F"]},
+    {"id":"J", "type":"sleep", "args":{"ms":100}, "depends_on":["F","G"]},
+    {"id":"K", "type":"sum_squares", "args":{"from":1,"to":20}, "depends_on":["G"]},
+    {"id":"L", "type":"sleep", "args":{"ms":50}, "depends_on":["H"]},
+    {"id":"M", "type":"sum_squares", "args":{"from":1,"to":50}, "depends_on":["I","J"]},
+    {"id":"N", "type":"sleep", "args":{"ms":100}, "depends_on":["J","K"]},
+    {"id":"O", "type":"sum_squares", "args":{"from":100,"to":200}, "depends_on":["L"]},
+    {"id":"P", "type":"sleep", "args":{"ms":50}, "depends_on":["M","N"]},
+    {"id":"Q", "type":"sum_squares", "args":{"from":0,"to":1000}, "depends_on":["O"]},
+    {"id":"R", "type":"sleep", "args":{"ms":50}, "depends_on":["P","Q"]},
+    {"id":"S", "type":"sum_squares", "args":{"from":-10,"to":10}, "depends_on":["R"]},
+    {"id":"T", "type":"sleep", "args":{"ms":0}, "depends_on":["R","S"]}
+  ]
+}
